@@ -136,12 +136,15 @@ def cmd_upload(neo, args):
         for i in sources:
             paths[i] = os.path.join(dest, os.path.basename(i))
     elif sourcesl == 1:
-        files = neo.list(dest)
         source = sources[0]
-        if len(files) == 0:
-            paths[source] = dest
-        else:
+        if dest[:1] == "/":
             paths[source] = os.path.join(dest, os.path.basename(source))
+        else:
+            files = neo.list(dest)
+            if len(files) == 0:
+                paths[source] = dest
+            else:
+                paths[source] = os.path.join(dest, os.path.basename(source))
 
     neo.upload(paths, follow_links=args.dereference)
 
