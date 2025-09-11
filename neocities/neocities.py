@@ -227,23 +227,33 @@ class Neocities:
 
         return self._call_api("info", method="get", auth=auth, params=params)["info"]
 
-    def list(self, path: str | Path = "") -> List[dict]:
+    def list(self, paths: str | Path | List[str | Path] = "") -> List[dict]:
         """
         Lists file structure of site at arg( path ), if empty arg( path ) defaults to "/".
 
         return( List of dictionaries describing site's file sructure )
         """
 
-        params = None
-        if path != "":
-            params = {"path": str(path)}
+        if isinstance(paths, str) or isinstance(paths, Path):
+            paths = [paths]
 
-        return self._call_api("list", method="get", params=params)["files"]
+        ret = []
+        for path in paths:
+            params = None
+            if path != "":
+                params = {"path": str(path)}
 
-    def delete(self, paths: List[str]):
+            ret.extend(self._call_api("list", method="get", params=params)["files"])
+        return ret
+
+    def delete(self, paths: str | List[str]):
         """
         Removes lists of paths from sites, if directory path is passed it'll be removed recursively.
         """
+
+        if isinstance(paths, str):
+            paths = [paths]
+
         if len(paths) == 0:
             return
 
