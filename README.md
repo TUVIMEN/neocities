@@ -248,7 +248,7 @@ from neocities import (
     FileNotFoundError
 )
 
-neo = neocities(wait=0.8, timeout=60) # kwargs are passed to treerequests lib
+neo = Neocities(wait=0.8, timeout=60) # kwargs are passed to treerequests lib
 
 try:
     neo.login(env=True) # login from environment variables
@@ -269,7 +269,7 @@ Any errors regarding http connection raise `RequestError`.
 
 Failure to perform operation raises `OpFailedError`, `FileNotFoundError` derives from it.
 
-### neocities class
+### Neocities(**kwargs)
 
 kwargs are passed to treerequests session object https://github.com/TUVIMEN/treerequests
 

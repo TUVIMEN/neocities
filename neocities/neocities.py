@@ -181,7 +181,7 @@ class Neocities:
         """
 
         def set_api(apikey):
-            if not self.valid_api(apikey):
+            if not self.valid_apikey(apikey):
                 raise AuthenticationError("invalid api key '{}'".format(apikey))
             self.api = apikey
 
@@ -201,7 +201,7 @@ class Neocities:
             raise AuthenticationError("no environment variables for authentication set")
 
     @staticmethod
-    def valid_api(api: str) -> bool:
+    def valid_apikey(api: str) -> bool:
         if len(api) != 32:
             return False
 

@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# by Dominik Stanisław Suchora <hexderm@gmail.com>
+# License: GNU GPLv3
+
+
 class NeocitiesError(Exception):
     pass
 
