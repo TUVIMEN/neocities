@@ -54,7 +54,11 @@ def to_mtime(date: str) -> str:
 
 
 def cmd_list(neo, args):
-    files = neo.list(args.dir)
+    files = []
+    paths = [""] if len(args.paths) == 0 else args.paths
+    for i in paths:
+        files.extend(neo.list(i))
+
     if args.json:
         print(json.dumps(files, separators=(",", ":")))
         return
@@ -262,11 +266,11 @@ def argparser():
         add_help=False,
     )
     list_parser.add_argument(
-        "dir",
-        metavar="DIR",
+        "paths",
+        metavar="PATH",
         type=str,
         default="",
-        nargs="?",
+        nargs="*",
     )
     list_parser.add_argument(
         "-j",
