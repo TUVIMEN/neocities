@@ -286,7 +286,7 @@ class Neocities:
         path: str | Path, follow_links: bool = False
     ) -> Generator[str]:
         for i in os.scandir(path):
-            if not follow_links and i.is_link():
+            if not follow_links and i.is_symlink():
                 continue
             if i.is_dir():
                 yield from Neocities._get_files_from_dir(i.path)
@@ -375,6 +375,7 @@ class Neocities:
     def _sync_local_files(
         self, path: str | Path, follow_links: bool
     ) -> set[tuple[str, str]]:
+        path = path.removesuffix("/")
         for i in self._get_uploads_from_dir(path, "", follow_links=follow_links):
             hsum = filesha1(i[1])
             yield (hsum, i[1].removeprefix(path + "/"))
@@ -395,7 +396,7 @@ class Neocities:
         }
         for i in local_files:
             path = i[1]
-            while (path := os.path.dirname(path)) != "":
+            while (path := os.path.dirname(path)) != "" and path != "/":
                 if directories.get(path) is not None:
                     directories[path] = True
         return (path for path in directories if not directories[path])
@@ -432,11 +433,9 @@ class Neocities:
         self.delete(to_delete)
         self.upload(to_upload, follow_links=follow_links)
 
-    def download(self, sources: str | List[str], dest: str | Path = ""):
-        """
-        Downloads site files from arg( sources ) to arg( dest ), arg( sources ) can be either a list of remote paths or just a string
-        """
-
+    def _download_files(
+        self, sources: str | List[str], dest: str | Path
+    ) -> dict[str, str]:
         files = {}
         if isinstance(sources, str):
             sources = [sources]
@@ -455,6 +454,15 @@ class Neocities:
                         files[os.path.basename(path)] = path
                     else:
                         files[path.removeprefix(i).removeprefix("/")] = path
+
+        return files
+
+    def download(self, sources: str | List[str], dest: str | Path = ""):
+        """
+        Downloads site files from arg( sources ) to arg( dest ), arg( sources ) can be either a list of remote paths or just a string
+        """
+
+        files = self._download_files(sources, dest)
 
         sitename = self.info()["sitename"]
         url = "https://{}.neocities.org".format(sitename)
