@@ -207,21 +207,24 @@ def argparser():
         "--username",
         metavar="USERNAME",
         type=str,
-        help="",
+        default="",
+        help="Specify username for authentication",
     )
     general.add_argument(
         "-p",
         "--password",
         metavar="PASSWORD",
         type=str,
-        help="",
+        default="",
+        help="Specify password for authentication",
     )
     general.add_argument(
         "-a",
         "--api",
         metavar="API KEY",
         type=str,
-        help="",
+        default="",
+        help="Specify api key for authentication",
     )
 
     subparsers = parser.add_subparsers(title="subcommands", required=True)
@@ -388,20 +391,13 @@ def argparser():
     return parser
 
 
-def neocities_login(neo, args):
-    if args.api is not None:
-        neo.login(api=args.api)
-    elif args.username is not None and args.password is not None:
-        neo.login(username=args.username, password=args.password)
-    else:
-        neo.login_from_env()
-
-
 def neocities_create(args, login=True):
     neo = Neocities()
     treerequests.args_session(neo.ses, args)
     if login:
-        neocities_login(neo, args)
+        neo.login(
+            username=args.username, password=args.password, api=args.api, env=True
+        )
 
     return neo
 

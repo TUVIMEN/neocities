@@ -46,6 +46,8 @@ def filesha1(path: str | Path):
 
 
 class Neocities:
+    """ """
+
     DOMAIN = "https://neocities.org/api"
 
     UPLOAD_CHUNK_SIZE = 32
@@ -165,35 +167,34 @@ class Neocities:
                 raise OpFailedError(message)
         raise OpFailedError(r)
 
-    def login(self, username: str = "", password: str = "", api: str = ""):
+    def login(self, username: str = "", password: str = "", api: str = "", env=False):
         """
         Sets authentication credentials.
 
         arg( api ) refers to api key, if empty both arg( username ) and arg( password ) have to be specified.
+
+        If arg( env ) is set to True credentials are read from environment variables: $NEOCITIES_API, $NEOCITIES_USERNAME, $NEOCITIES_PASSWORD
         """
 
-        if api == "":
-            if username == "":
-                raise AuthenticationError("empty username")
-            if password == "":
-                raise AuthenticationError("empty password")
+        def set_api(apikey):
+            if not self.valid_api(apikey):
+                raise AuthenticationError("invalid api key '{}'".format(apikey))
+            self.api = apikey
+
+        if api != "":
+            set_api(api)
+        elif username != "" and password != "":
+            self.username = username
+            self.password = password
+        elif (api := os.getenv("NEOCITIES_API")) is not None:
+            set_api(api)
+        elif (username := os.getenv("NEOCITIES_USERNAME")) is not None and (
+            password := os.getenv("NEOCITIES_PASSWORD")
+        ) is not None:
             self.username = username
             self.password = password
         else:
-            if not self.valid_api(api):
-                raise AuthenticationError("invalid api")
-            self.api = api
-
-    def login_from_env(self):
-        if (api := os.getenv("NEOCITIES_API")) is not None:
-            return self.login(api=api)
-
-        username = os.getenv("NEOCITIES_USERNAME")
-        password = os.getenv("NEOCITIES_PASSWORD")
-        if username is not None and password is not None:
-            self.login(username=username, password=password)
-
-        raise ValueError("no environment variables for authentication set")
+            raise AuthenticationError("no environment variables for authentication set")
 
     @staticmethod
     def valid_api(api: str) -> bool:
