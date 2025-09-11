@@ -46,7 +46,9 @@ def filesha1(path: str | Path):
 
 
 class Neocities:
-    """ """
+    """
+    kwargs are passed to treerequests session object https://github.com/TUVIMEN/treerequests
+    """
 
     DOMAIN = "https://neocities.org/api"
 
@@ -167,7 +169,9 @@ class Neocities:
                 raise OpFailedError(message)
         raise OpFailedError(r)
 
-    def login(self, username: str = "", password: str = "", api: str = "", env=False):
+    def login(
+        self, username: str = "", password: str = "", api: str = "", env: bool = False
+    ):
         """
         Sets authentication credentials.
 
@@ -217,6 +221,8 @@ class Neocities:
         """
         Gets info of user's site or about arg( sitename ) if it's not empty.
 
+        Authentication is not required when arg( sitename ) is not empty.
+
         returns( Dictionary of site info )
         """
 
@@ -230,7 +236,7 @@ class Neocities:
 
     def list(self, paths: str | Path | List[str | Path] = "") -> List[dict]:
         """
-        Lists file structure of site at arg( path ), if empty arg( path ) defaults to "/".
+        Lists file structure of site at arg( paths ), if empty arg( paths ) defaults to "/".
 
         return( List of dictionaries describing site's file sructure )
         """
@@ -249,7 +255,7 @@ class Neocities:
 
     def delete(self, paths: str | List[str]):
         """
-        Removes lists of paths from sites, if directory path is passed it'll be removed recursively.
+        Removes arg( paths ) from site, if directory path is passed it'll be removed recursively.
         """
 
         if isinstance(paths, str):
@@ -435,7 +441,7 @@ class Neocities:
 
     def sync(self, source: str | Path, dest: str = "", follow_links: bool = False):
         """
-        Ensures that site structure is exactly the same as that under str( path ) directory. Files having the same hashes are not retransferred.
+        Ensures that site structure is exactly the same as that under arg( source ) directory. Files having the same hashes are not retransferred.
         """
 
         dest = dest.removeprefix("/")
@@ -470,7 +476,7 @@ class Neocities:
 
     def download(self, sources: str | List[str], dest: str | Path = ""):
         """
-        Downloads site files from arg( sources ) to arg( dest ), arg( sources ) can be either a list of remote paths or just a string
+        Downloads site files from arg( sources ) to arg( dest ), arg( sources ) can be either a list of remote paths or just a string.
         """
 
         files = self._download_files(sources, dest)
