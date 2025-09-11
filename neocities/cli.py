@@ -34,7 +34,7 @@ def cmd_key(neo, args):
 
 
 def cmd_info(neo, args):
-    print(neo.info(args.sitename))
+    print(json.dumps(neo.info(args.sitename), indent=2))
 
 
 def hsize(size: int) -> str:
@@ -56,7 +56,7 @@ def to_mtime(date: str) -> str:
 def cmd_list(neo, args):
     files = neo.list(args.dir)
     if args.json:
-        print(files)
+        print(json.dumps(files, separators=(",", ":")))
         return
 
     f = sys.stdout
