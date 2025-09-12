@@ -1,0 +1,26 @@
+body {
+    margin: 0 !important;
+    background-color: white;
+    color: #888;
+    font-size: 12;
+}
+
+main {
+    img {
+        margin: auto;
+        width: 500px;
+    }
+
+    p.paragraph {
+        color: black
+    }
+}
+
+footer {
+    background-color: black;
+    color: black;
+}
+
+footer:hover {
+    background-color: white;
+}
