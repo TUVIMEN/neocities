@@ -379,6 +379,9 @@ class Neocities:
     # """
     # https://neocities.org/site_files/rename
 
+    def _clean_index_html(self):
+        self.upload_text({"index.html": b""})
+
     def purge(self):
         """
         Removes everything from site, since `index.html` can't be removed it'll be replaced with empty file.
@@ -387,7 +390,7 @@ class Neocities:
         files = [i["path"] for i in self.list() if i["path"] != "index.html"]
         self.delete(files)
 
-        self.upload_text({"index.html": b""})
+        self._clean_index_html()
 
     def _sync_local_files(
         self, path: str | Path, follow_links: bool
@@ -446,6 +449,10 @@ class Neocities:
 
         dest = dest.removeprefix("/")
         to_delete, to_upload = self._sync_lists(source, dest, follow_links)
+
+        if "index.html" in to_delete:
+            to_delete.remove("index.html")
+            self._clean_index_html()
 
         self.delete(to_delete)
         self.upload(to_upload, follow_links=follow_links)
