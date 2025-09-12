@@ -33,7 +33,7 @@ def sha1(data: str | bytes):
     return hashlib.sha1(data).hexdigest()
 
 
-def filesha1(path: str | Path):
+def filesha1(path: str | Path) -> str:
     h = hashlib.sha1()
 
     with open(path, "rb") as f:
@@ -477,7 +477,9 @@ class Neocities:
                     if path == i:
                         files[os.path.basename(path)] = path
                     else:
-                        files[path.removeprefix(i).removeprefix("/")] = path
+                        files[
+                            path.removeprefix(os.path.dirname(i)).removeprefix("/")
+                        ] = path
 
         return files
 
@@ -498,7 +500,7 @@ class Neocities:
 
             os.makedirs(os.path.dirname(file), exist_ok=True)
 
-            r = self.ses.get(url + "/" + rpath, stream=True)
+            r = self.ses.get(url + "/" + rpath, stream=True, allow_redirects=True)
             with open(file, "wb") as f:
                 for chunk in r.iter_content(chunk_size=1024 * 1024):
                     f.write(chunk)
