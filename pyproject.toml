@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "neocities"
+name = "neocities-neo"
 version = "0.0.1"
 description = "An api for neocities.org"
 readme = "README.md"

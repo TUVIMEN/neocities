@@ -4,7 +4,7 @@ A python api for neocities.org
 
 # Installation
 
-    pip install neocities
+    pip install neocities-neo
 
 # Usage
 
