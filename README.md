@@ -11,15 +11,16 @@ A python api for neocities.org
 ## CLI
 
 ```
-usage: neocities [-h] [-u USERNAME] [-p PASSWORD] [-a API KEY] [-w TIME] [-W TIME] [-r NUM]
-                   [--retry-wait TIME] [--force-retry] [-m TIME] [-k] [-L] [-A UA] [-x DICT]
-                   [-H HEADER] [-b COOKIE] [-B BROWSER]
+usage: neocities [-h] [-u USERNAME] [-p PASSWORD] [-a API KEY] [-w TIME]
+                   [-W TIME] [-r NUM] [--retry-delay TIME]
+                   [--retry-all-errors] [-m TIMEOUT] [-k] [-L]
+                   [--max-redirs NUM] [-A UA] [-x PROXY] [-H HEADER]
+                   [-b COOKIE] [-B BROWSER]
                    {key,sync,info,list,delete,purge,upload,upload-raw,hash,download} ...
 
 Tool for interacting with neocities.org
 
-If credentials for authorization are not passed through arguments, they'll be read from
-$NEOCITIES_API or $NEOCITIES_USERNAME and $NEOCITIES_PASSWORD environment variables.
+If credentials for authorization are not passed through arguments, they'll be read from $NEOCITIES_API or $NEOCITIES_USERNAME and $NEOCITIES_PASSWORD environment variables.
 
 General:
   -h, --help            Show this help message and exit
@@ -43,23 +44,35 @@ subcommands:
     download            download files from site recusively
 
 Request settings:
-  -w, --wait TIME       Sets waiting time for each request
+  -w, --wait TIME       Set waiting time for each request
   -W, --wait-random TIME
-                        Sets random waiting time for each request to be from 0 to TIME
-  -r, --retries NUM     Sets number of retries for failed request to NUM
-  --retry-wait TIME     Sets interval between each retry
-  --force-retry         Retry no matter the error
-  -m, --timeout TIME    Sets request timeout
+                        Set random waiting time for each request to be from 0
+                        to TIME
+  -r, --retry NUM       Set number of retries for failed request to NUM
+  --retry-delay TIME    Set interval between each retry
+  --retry-all-errors    Retry no matter the error
+  -m, --timeout TIMEOUT
+                        Set request timeout, if in TIME format it'll be set
+                        for the whole request. If in TIME,TIME format first
+                        TIME will specify connection timeout, the second read
+                        timeout. If set to '-' timeout is disabled
   -k, --insecure        Ignore ssl errors
-  -L, --location        Allow for redirections, can be dangerous if credentials are passed in
-                        headers
+  -L, --location        Allow for redirections, can be dangerous if
+                        credentials are passed in headers
+  --max-redirs NUM      Set the maximum number of redirections to follow
   -A, --user-agent UA   Sets custom user agent
-  -x, --proxies DICT    Set requests proxies dictionary, e.g. -x
-                        '{"http":"127.0.0.1:8080","ftp":"0.0.0.0"}'
-  -H, --header HEADER   Set curl style header, can be used multiple times e.g. -H 'User: Admin'
-                        -H 'Pass: 12345'
-  -b, --cookie COOKIE   Set curl style cookie, can be used multiple times e.g. -b 'auth=8f82ab'
-                        -b 'PHPSESSID=qw3r8an829'
+  -x, --proxy PROXY     Use the specified proxy, can be used multiple times.
+                        If set to URL it'll be used for all protocols, if in
+                        PROTOCOL URL format it'll be set only for given
+                        protocol, if in URL URL format it'll be set only for
+                        given path. If first character is '@' then headers are
+                        read from file
+  -H, --header HEADER   Set curl style header, can be used multiple times e.g.
+                        -H 'User: Admin' -H 'Pass: 12345', if first character
+                        is '@' then headers are read from file e.g. -H @file
+  -b, --cookie COOKIE   Set curl style cookie, can be used multiple times e.g.
+                        -b 'auth=8f82ab' -b 'PHPSESSID=qw3r8an829', without
+                        '=' character argument is read as a file
   -B, --browser BROWSER
                         Get cookies from specified browser e.g. -B firefox
 ```
