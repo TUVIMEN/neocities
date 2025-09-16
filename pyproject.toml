@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neocities-neo"
-version = "0.0.1"
+version = "0.0.2"
 description = "An api for neocities.org"
 readme = "README.md"
 requires-python = ">=3.8"

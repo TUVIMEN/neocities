@@ -395,16 +395,15 @@ class Neocities:
     def _sync_local_files(
         self, path: str | Path, follow_links: bool
     ) -> set[tuple[str, str]]:
-        path = path.removesuffix("/")
         for i in self._get_uploads_from_dir(path, "", follow_links=follow_links):
             hsum = filesha1(i[1])
-            yield (hsum, i[1].removeprefix(path + "/"))
+            yield (hsum, i[1].removeprefix(path))
 
     def _sync_remote_files(self, files, path: str) -> dict[str, str]:
         for i in files:
             if i["is_directory"]:
                 continue
-            yield (i["sha1_hash"], i["path"].removeprefix(path + "/"))
+            yield (i["sha1_hash"], i["path"].removeprefix(path))
 
     def _sync_empty_directories(
         self, remote_files, local_files, dest: str
@@ -424,6 +423,9 @@ class Neocities:
     def _sync_lists(
         self, source: str, dest: str, follow_links: bool
     ) -> tuple[List[str], dict[str, str]]:
+        source = os.path.normpath(source) + "/"
+        dest = os.path.normpath(dest) + "/"
+
         local_files = set(self._sync_local_files(source, follow_links))
         remote_files_all = self.list(dest)
         remote_files = set(self._sync_remote_files(remote_files_all, dest))
