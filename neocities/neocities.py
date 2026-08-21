@@ -452,8 +452,14 @@ class Neocities:
         dest = dest.removeprefix("/")
         to_delete, to_upload = self._sync_lists(source, dest, follow_links)
 
-        if "index.html" in to_delete:
-            to_delete.remove("index.html")
+        if (index_path := "index.html") in to_delete:
+            to_delete.remove(index_path)
+            self._clean_index_html()
+        elif (index_path := os.path.join(dest, "index.html")) in to_delete:
+            to_delete.remove(index_path)
+            self._clean_index_html()
+        elif (index_path := "./index.html") in to_delete:
+            to_delete.remove(index_path)
             self._clean_index_html()
 
         self.delete(to_delete)
